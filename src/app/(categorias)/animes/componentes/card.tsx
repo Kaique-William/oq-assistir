@@ -74,7 +74,7 @@ export function Card({ anime, onClick }: CardProps) {
       onClick={onClick} // Chama a função onClick quando o card é clicado
       className="flex flex-col items-center h-full" // Adiciona classes CSS
     >
-      <div className="flex flex-col text-center text-white pt-1 space-y-2">
+      <div className="flex flex-col text-center pt-1 space-y-2">
         <h2 className="text-orange-500 font-bold line-clamp-2 overflow-hidden text-ellipsis whitespace-normal">
           {anime.nome}
         </h2>

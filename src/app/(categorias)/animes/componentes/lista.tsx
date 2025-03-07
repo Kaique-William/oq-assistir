@@ -57,7 +57,7 @@ export default function Lista() {
                 className={` w-[182px] h-[250px] p-1 rounded-lg bg-gradient-to-t ${corBorda} via-black to-black border border-white hover:cursor-pointer hover:scale-105 duration-300`}
                 key={anime.id}
               >
-                <Card anime={anime} onClick={() => handleClickInfo(anime)} />
+                  <Card anime={anime} onClick={() => handleClickInfo(anime)} />
               </li>
             );
           })}

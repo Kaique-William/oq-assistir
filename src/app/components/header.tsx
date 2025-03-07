@@ -8,8 +8,8 @@ import { FilmeContext } from "../(categorias)/filmes/componentes/contexto";
 import { SerieContext } from "../(categorias)/series/componentes/contexto";
 
 const Links = [
+  { href: "/animes", label: "Animes" },
   { href: "/filmes", label: "Filmes" },
-  { href: "/animes", label: "animes" },
   { href: "/series", label: "Series" },
 ];
 
