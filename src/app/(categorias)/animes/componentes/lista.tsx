@@ -24,7 +24,7 @@ export default function Lista() {
     return <div>Carregando...</div>;
   }
 
-  const { filteredData, tmdbResults, setTmdbResults } = contexto;
+  const { filteredData, tmdbResults, setTmdbResults, searchQuery } = contexto;
 
   // Define o anime selecionado para exibir no modal de informações
   const handleClickInfo = (anime: Props) => {
@@ -34,6 +34,13 @@ export default function Lista() {
   // Fecha o modal de informações
   const handleClose = () => {
     setSelecionado(null);
+  };
+
+  // Realiza a busca no TMDB
+  const handleTmdbSearch = async () => {
+    const response = await fetch(`/animes/api?q=${searchQuery}&source=tmdb`);
+    const data = await response.json();
+    setTmdbResults(data.data);
   };
 
   return (
@@ -57,11 +64,20 @@ export default function Lista() {
                 className={` w-[182px] h-[250px] p-1 rounded-lg bg-gradient-to-t ${corBorda} via-black to-black border border-white hover:cursor-pointer hover:scale-105 duration-300`}
                 key={anime.id}
               >
-                  <Card anime={anime} onClick={() => handleClickInfo(anime)} />
+                <Card anime={anime} onClick={() => handleClickInfo(anime)} />
               </li>
             );
           })}
       </ul>
+      
+      {filteredData.length > 0 && (
+        <button
+          className="mt-4 px-4 py-2 border border-blue-500 text-white rounded-lg hover:bg-blue-700"
+          onClick={handleTmdbSearch}
+        >
+          Mais resultados
+        </button>
+      )}
       {selecionado && <ModalInfo anime={selecionado} onClose={handleClose} />}
 
       {tmdbResults.length > 0 && (

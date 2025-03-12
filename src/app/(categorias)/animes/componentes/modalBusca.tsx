@@ -77,7 +77,7 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
   }, []);
 
   return (
-    <div className="fixed w-full h-full inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50">
+    <div className="fixed mt-3 w-full h-full inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50">
       <div className="lg:w-[70%] w-[97%] max-h-[80%] bg-black border-2 border-white px-1 py-2  rounded-lg overflow-y-auto">
         <span
           className="m-2 fixed text-red-600 font-bold text-3xl hover:cursor-pointer"
@@ -95,7 +95,7 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
                   : ""
               }`}
             >
-              <h2 className="text-orange-500 font-bold text-center">{anime.name}</h2>
+              <h2 className="text-orange-500 font-bold text-center text-3xl">{anime.name}</h2>
               <Image
                 src={`https://image.tmdb.org/t/p/original${anime.poster_path}`}
                 alt={anime.name}

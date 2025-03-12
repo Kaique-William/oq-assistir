@@ -23,7 +23,7 @@ export default function Lista() {
     return <div>Carregando...</div>;
   }
 
-  const { filteredData, tmdbResults, setTmdbResults } = contexto;
+  const { filteredData, tmdbResults, setTmdbResults, searchQuery } = contexto;
 
   const handleClickInfo = (filme: Props) => {
     setSelecionado(filme);
@@ -32,6 +32,12 @@ export default function Lista() {
   const handleClose = () => {
     setSelecionado(null);
   };
+
+  const handleTmdbSearch = async () => {
+    const response = await fetch(`/filmes/api?q=${searchQuery}&source=tmdb`);
+    const data = await response.json();
+    setTmdbResults(data);
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -59,6 +65,16 @@ export default function Lista() {
             );
           })}
       </ul>
+
+      {filteredData.length > 0 && (
+        <button
+        className="mt-4 px-4 py-2 border border-blue-500 text-white rounded-lg hover:bg-blue-700"
+        onClick={handleTmdbSearch}
+        >
+          Mais resultados
+        </button>
+      )}
+
       {selecionado && <ModalInfo filme={selecionado} onClose={handleClose} />}
 
       {tmdbResults.length > 0 && (

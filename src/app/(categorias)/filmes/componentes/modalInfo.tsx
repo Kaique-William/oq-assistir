@@ -77,18 +77,18 @@ export default function ModalInfo({ filme, onClose }: ModalInfoProps) {
       onClick={handleClose}
     >
       <div
-        className="lg:w-[70%] w-[98%] max-h-[80%] bg-black border border-white px-1 py-2  rounded-lg flex flex-col items-center text-center space-y-2 overflow-y-auto"
+        className="lg:w-[70%] w-[97%] max-h-[80%] mt-3 bg-black border-2 border-white p-4 rounded-lg flex flex-col items-center text-center overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex w-full justify-between m-2">
-          <button
+        <div className="flex w-full justify-between p-2">
+          <span
             className="text-red-600 font-bold text-3xl hover:cursor-pointer"
             onClick={handleClose}
           >
             &times;
-          </button>
+          </span>
           <button
-            className="p-2 border border-red-500 hover:bg-red-500 text-white rounded-xl"
+            className="p-2 mr-2 border border-red-600 hover:bg-red-600 text-white rounded-xl"
             onClick={(e) => {
               e.stopPropagation();
               handleDelete(filme.id);
@@ -98,7 +98,7 @@ export default function ModalInfo({ filme, onClose }: ModalInfoProps) {
           </button>
         </div>
 
-        <h2 className="text-purple-400 font-bold text-center text-2xl">{filme.nome}</h2>
+        <h2 className="text-blue-500 font-bold text-center mb-4 text-3xl">{filme.nome}</h2>
         <Image
           src={imageUrl}
           alt={filme.nome}

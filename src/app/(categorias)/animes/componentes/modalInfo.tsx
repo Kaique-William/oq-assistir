@@ -79,10 +79,10 @@ export default function ModalInfo({ anime, onClose }: ModalInfoProps) {
       onClick={handleClose}
     >
       <div
-        className="lg:w-[70%] w-[97%] max-h-[80%] bg-black border-2 border-white px-1 py-2  rounded-lg flex flex-col items-center text-center space-y-2 overflow-y-auto"
+        className="lg:w-[70%] w-[97%] max-h-[80%] mt-3 bg-black border-2 border-white p-4 rounded-lg flex flex-col items-center text-center  overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex w-full justify-between m-2">
+        <div className="flex w-full justify-between p-2">
           <span
             className="text-red-600 font-bold text-3xl hover:cursor-pointer"
             onClick={handleClose}
@@ -90,7 +90,7 @@ export default function ModalInfo({ anime, onClose }: ModalInfoProps) {
             &times;
           </span>
           <button
-            className="p-2 border border-red-600 hover:bg-red-600 text-white rounded-xl"
+            className="p-2 mr-2 border border-red-600 hover:bg-red-600 text-white rounded-xl"
             onClick={(e) => {
               e.stopPropagation();
               handleDelete(anime.id);
@@ -100,7 +100,7 @@ export default function ModalInfo({ anime, onClose }: ModalInfoProps) {
           </button>
         </div>
 
-        <h2 className="text-orange-500 font-bold text-center text-2xl">{anime.nome}</h2>
+        <h2 className="text-orange-500 font-bold text-center mb-4 text-3xl">{anime.nome}</h2>
         <Image
           src={imageUrl}
           alt={anime.nome}
@@ -117,11 +117,11 @@ export default function ModalInfo({ anime, onClose }: ModalInfoProps) {
           {anime.ano}
         </p>
         <p className="text-gray-300">
-          <span className="font-bold text-lg text-white">Temporadas:</span>{" "}
+          <span className="font-bold text-lg text-white">Temporadas: </span>
           {anime.temporadas}
         </p>
         <p className="text-gray-300">
-          <span className="font-bold text-lg text-white">Episódios:</span>{" "}
+          <span className="font-bold text-lg text-white">Episódios: </span>
           {anime.episodios}
         </p>
         <p className="text-gray-300 text-center text-lg">{dados.overview}</p>

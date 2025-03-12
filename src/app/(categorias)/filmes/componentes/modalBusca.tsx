@@ -60,8 +60,8 @@ export default function ModalBusca({ filmesApi, onClose }: ModalBuscaProps) {
   }, []);
 
   return (
-    <div className="fixed w-full h-full inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50">
-      <div className="lg:w-[70%] w-[97%] max-h-[80%] bg-black border-2 border-white px-1 py-2  rounded-lg overflow-y-auto">
+    <div className="fixed mt-3 w-full h-full inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50">
+      <div className="lg:w-[70%] w-[97%] max-h-[80%] bg-black border-2 border-white px-1 py-2 rounded-lg overflow-y-auto">
         <span
           className="m-2 fixed text-red-600 font-bold text-3xl hover:cursor-pointer"
           onClick={onClose}
@@ -75,11 +75,10 @@ export default function ModalBusca({ filmesApi, onClose }: ModalBuscaProps) {
             return (
               <li
                 key={filme.id}
-                className={`flex flex-col items-center p-3 space-y-2 ${
-                  index < filmesApi.length - 1 ? "border-b-2" : ""
-                }`}
+                className={`flex flex-col items-center p-3 space-y-2 ${index < filmesApi.length - 1 ? "border-b-2 border-gray-400 pb-4" : ""
+                  }`}
               >
-                <h2 className="text-purple-400 font-bold text-center">
+                <h2 className="text-blue-500 font-bold text-center text-3xl">
                   {filme.title}
                 </h2>
                 <Image

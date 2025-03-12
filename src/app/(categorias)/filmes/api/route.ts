@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q") || "";
+    const source = searchParams.get("source") || "database";
 
     const buscaBanco = await sql`
           SELECT id, nome, genero, ano, duracao, status FROM filmes
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest) {
       `;
     const { rows: filmes } = buscaBanco;
 
-    if (filmes.length === 0) {
+    if (filmes.length === 0 || source === "tmdb") {
       const tmdbResults = await fetch(
         `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${key}`
       );

@@ -38,11 +38,11 @@ export default function Header() {
   };
 
   return (
-    <div className="bg-black border-b-2 border-white text-white flex justify-between items-center p-1 pb-2 fixed top-0 w-full z-10">
-      <div>
+    <div className="bg-black border-b-2 border-white flex justify-between items-center p-1 pb-2 fixed top-0 w-full lg:h-[10%] h-[8%] z-10">
+      <div className="text-white ml-3">
         <Link href="/">cine</Link>
       </div>
-      <div className="flex-1 text-center mr-10">
+      <div className="flex-1 text-center mr-10 space-y-2">
         {Links.map((link) => {
           const ativo =
             pathname === link.href ||

@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
     // Extrai os parâmetros de busca da URL
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q") || "";
+    const source = searchParams.get("source") || "database";
 
     // Busca no banco de dados por animes que correspondem à query
     const buscaBanco = await sql`
@@ -18,8 +19,8 @@ export async function GET(req: NextRequest) {
       `;
     const { rows: animes } = buscaBanco;
 
-    // Se não encontrar resultados no banco de dados, busca na API TMDB
-    if (animes.length === 0) {
+    // Se a fonte for TMDB, busca na API TMDB
+    if (animes.length === 0 || source === "tmdb") {
       const tmdbResults = await fetch(
         `https://api.themoviedb.org/3/search/tv?query=${query}&api_key=${key}`
       );
@@ -29,7 +30,9 @@ export async function GET(req: NextRequest) {
         // Itera sobre todos os IDs dos resultados e busca detalhes adicionais para cada um
         const resultadoApi = await Promise.all(
           tmdbData.results.map(async (item: { id: number }) => {
-            const response = await fetch(`https://api.themoviedb.org/3/tv/${item.id}?api_key=${key}&language=pt-BR`);
+            const response = await fetch(
+              `https://api.themoviedb.org/3/tv/${item.id}?api_key=${key}&language=pt-BR`
+            );
             return response.json();
           })
         );
