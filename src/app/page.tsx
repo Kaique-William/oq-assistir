@@ -1,6 +1,9 @@
+import Tendencia from "./components/tendencia";
 
-export default function Home() {
+export default async function Home() {
   return (
-    <h1>oi</h1>
-  )
+    <div>
+      <Tendencia />
+    </div>
+  );
 }
