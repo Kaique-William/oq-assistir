@@ -38,7 +38,7 @@ export default function Header() {
   };
 
   return (
-    <div className="bg-black border-b-2 border-white flex justify-between items-center p-1 pb-2 fixed top-0 w-full lg:h-[10%] h-[8%] z-10">
+    <div className="bg-black border-b-2 border-white flex justify-between items-center p-1 pb-2 fixed top-0 w-full lg:h-[10%] h-[9%] z-10">
       <div className="text-white ml-3">
         <Link href="/">cine</Link>
       </div>

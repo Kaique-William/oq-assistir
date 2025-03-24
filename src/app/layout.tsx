@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`lg:mt-[6%] mt-[20%] bg-black text-white`}>
+      <body className={`lg:mt-[85px] mt-[82px] bg-black text-white`}>
         <AnimeProvider>
           <FilmesProvider>
             <SeriesProvider>

@@ -45,7 +45,7 @@ export default function Tendencia() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full px-2">
       <ul className="flex overflow-x-auto space-x-4 scrollbar-hide">
         {tendencia.map((item: item) => (
           <li key={item.id} className="flex-shrink-0" onClick={() => handleClick(item)}>
