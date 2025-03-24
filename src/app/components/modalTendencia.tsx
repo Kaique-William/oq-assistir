@@ -40,7 +40,7 @@ export default function ModalTendencia({ info, onClose }: Props) {
     } = dados[0];
     const filtrarGenero = genres.map((genre) => genre.name);
     const genero = filtrarGenero.join(" / ");
-    const ano = parseInt(release_date.slice(0, 4), 10) || (first_air_date.slice(0, 4), 10);
+    const ano = release_date ? parseInt(release_date.slice(0, 4), 10) : (first_air_date ? parseInt(first_air_date.slice(0, 4), 10) : null);
     try {
       if (media_type === "movie") {
         const response = await fetch("filmes/api", {
@@ -166,8 +166,8 @@ export default function ModalTendencia({ info, onClose }: Props) {
               <p className="text-zinc-300 text-center">
                 <span className="font-bold text-lg text-white">Ano: </span>
                 {parseInt(
-                  tendencia.first_air_date?.slice(0, 4) ||
-                  tendencia.release_date?.slice(0, 4)
+                  tendencia.first_air_date.slice(0, 4) ||
+                  tendencia.release_date.slice(0, 4)
                 )}
               </p>
               {tendencia.media_type === "tv" ? (
