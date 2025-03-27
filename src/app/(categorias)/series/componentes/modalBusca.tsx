@@ -25,14 +25,11 @@ export default function ModalBusca({ serieApi, onClose }: ModalBuscaProps) {
       name,
       genres,
       first_air_date,
-      number_of_episodes,
-      number_of_seasons,
+      poster_path
     } = serie;
 
     // Filtra os gêneros para remover "animação"
-    const filtrarGenero = genres
-      .filter((genre) => genre.name.toLowerCase() !== "animação")
-      .map((genre) => genre.name);
+    const filtrarGenero = genres.map((genre) => genre.name);
 
     const genero = filtrarGenero.join(" / ");
 
@@ -50,8 +47,7 @@ export default function ModalBusca({ serieApi, onClose }: ModalBuscaProps) {
           nome: name,
           genero,
           ano,
-          episodios: number_of_episodes,
-          temporadas: number_of_seasons,
+          poster: poster_path
         }),
       });
 

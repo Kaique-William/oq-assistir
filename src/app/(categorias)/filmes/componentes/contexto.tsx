@@ -16,8 +16,8 @@ interface Filme {
   nome: string;
   genero: string;
   ano: number;
-  duracao: number;
   status: string;
+  poster: string;
   respostaApi: {
     overview: string;
     poster_path: string;

@@ -25,8 +25,7 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
       name,
       genres,
       first_air_date,
-      number_of_episodes,
-      number_of_seasons,
+      poster_path
     } = anime;
 
     // Filtra os gêneros para remover "animação"
@@ -50,8 +49,7 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
           nome: name,
           genero,
           ano,
-          episodios: number_of_episodes,
-          temporadas: number_of_seasons,
+          poster: poster_path
         }),
       });
 
@@ -95,7 +93,9 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
                   : ""
               }`}
             >
-              <h2 className="text-orange-500 font-bold text-center text-3xl">{anime.name}</h2>
+              <h2 className="text-orange-500 font-bold text-center text-3xl">
+                {anime.name}
+              </h2>
               <Image
                 src={`https://image.tmdb.org/t/p/original${anime.poster_path}`}
                 alt={anime.name}
@@ -115,14 +115,18 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
                 {parseInt(anime.first_air_date.slice(0, 4), 10)}
               </p>
               <p className="text-gray-300">
-                <span className="font-bold text-lg text-white">Temporadas:</span>{" "}
+                <span className="font-bold text-lg text-white">
+                  Temporadas:
+                </span>{" "}
                 {anime.number_of_seasons}
               </p>
               <p className="text-gray-300">
-              <span className="font-bold text-lg text-white">Episódios:</span>{" "}
+                <span className="font-bold text-lg text-white">Episódios:</span>{" "}
                 {anime.number_of_episodes}
               </p>
-              <p className="text-gray-300 text-center text-lg">{anime.overview}</p>
+              <p className="text-gray-300 text-center text-lg">
+                {anime.overview}
+              </p>
               <button
                 className="mx-2 p-2 mt-2 bg-blue-600 hover:bg-blue-500 text-white rounded"
                 onClick={() => handleSave(anime)}

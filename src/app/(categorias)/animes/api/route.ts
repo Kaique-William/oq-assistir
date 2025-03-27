@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
     // Busca no banco de dados por animes que correspondem à query
     const buscaBanco = await sql`
-          SELECT id, nome, genero, ano, temporadas, episodios, status FROM animes
+          SELECT id, nome, genero, ano, status, poster FROM animes
           WHERE LOWER(nome || genero || ano) LIKE ${
             "%" + query.toLowerCase() + "%"
           }
@@ -68,10 +68,9 @@ export async function GET(req: NextRequest) {
         nome VARCHAR(255) TEXT NOT NULL,
         genero VARCHAR(255) TEXT NOT NULL,
         ano INT NOT NULL,
-        temporadas INT NOT NULL,
-        episodios INT NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'pra assistir' CHECK (status IN ('pra assistir', 'assistindo', 'assistido'))
-      )`;
+        poster VARCHAR(255) TEXT NOT NULL
+        )`;
       return NextResponse.json({ message: "Tabela animes criada" });
     } else {
       return NextResponse.json(
@@ -83,12 +82,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { id, nome, genero, ano, temporadas, episodios } = await req.json();
+  const { id, nome, genero, ano, poster } = await req.json();
 
   try {
     await sql`
-      INSERT INTO animes (id, nome, genero, ano, temporadas, episodios)
-      VALUES (${id}, ${nome}, ${genero}, ${ano}, ${temporadas}, ${episodios})
+      INSERT INTO animes (id, nome, genero, ano, poster)
+      VALUES (${id}, ${nome}, ${genero}, ${ano}, ${poster})
     `;
 
     return NextResponse.json(
@@ -148,3 +147,35 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+// atualizar dados do banco quando nescesario
+// export async function PUT() {
+//   try {
+//     const { rows: animes } = await sql`SELECT id, nome, poster FROM animes`;
+
+//     for (const anime of animes) {
+//       if (!anime.poster) {
+//         const response = await fetch(
+//           `https://api.themoviedb.org/3/tv/${anime.id}?api_key=${key}&language=pt-BR`
+//         );
+//         const data = await response.json();
+
+//         if (data && data.poster_path) {
+//           await sql`
+//             UPDATE animes
+//             SET poster = ${data.poster_path}
+//             WHERE id = ${anime.id}
+//           `;
+//         }
+//       }
+//     }
+
+//     return NextResponse.json({ message: "Dados atualizados com sucesso" });
+//   } catch (error) {
+//     console.error("Erro ao atualizar dados:", error);
+//     return NextResponse.json(
+//       { error: "Erro ao atualizar dados" },
+//       { status: 500 }
+//     );
+//   }
+// }

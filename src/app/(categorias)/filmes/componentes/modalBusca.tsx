@@ -18,7 +18,7 @@ interface ModalBuscaProps {
 
 export default function ModalBusca({ filmesApi, onClose }: ModalBuscaProps) {
   const handleSave = async (filme: TMDB) => {
-    const { id, title, genres, release_date, runtime } = filme;
+    const { id, title, genres, release_date, poster_path } = filme;
 
     const filtrarGenero = genres.map((genre) => genre.name);
 
@@ -37,7 +37,7 @@ export default function ModalBusca({ filmesApi, onClose }: ModalBuscaProps) {
           nome: title,
           genero,
           ano,
-          duracao: runtime,
+          poster: poster_path, // Garantir que poster não seja nulo
         }),
       });
 
@@ -75,8 +75,11 @@ export default function ModalBusca({ filmesApi, onClose }: ModalBuscaProps) {
             return (
               <li
                 key={filme.id}
-                className={`flex flex-col items-center p-3 space-y-2 ${index < filmesApi.length - 1 ? "border-b-2 border-gray-400 pb-4" : ""
-                  }`}
+                className={`flex flex-col items-center p-3 space-y-2 ${
+                  index < filmesApi.length - 1
+                    ? "border-b-2 border-gray-400 pb-4"
+                    : ""
+                }`}
               >
                 <h2 className="text-blue-500 font-bold text-center text-3xl">
                   {filme.title}

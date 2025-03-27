@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import { FaEye } from "react-icons/fa"; // Importar o ícone de olho
 
 interface CardProps {
   filme: {
@@ -6,8 +8,8 @@ interface CardProps {
     nome: string;
     genero: string;
     ano: number;
-    duracao: number;
     status: string;
+    poster: string;
   };
   onClick: () => void;
 }
@@ -67,39 +69,29 @@ export function Card({ filme, onClick }: CardProps) {
     };
   }, [tempo]);
 
-  const horas = Math.floor(filme.duracao / 60);
-  const restoMinutos = filme.duracao % 60;
-
   return (
-    <div
-      onClick={onClick} // Chama a função onClick quando o card é clicado
-      className="flex flex-col items-center h-full" // Adiciona classes CSS
-    >
-      <div className="flex flex-col text-center text-white pt-1 space-y-2">
-        <h2 className="text-purple-400 line-clamp-2 overflow-hidden text-ellipsis whitespace-normal">
-          {filme.nome}
-        </h2>
-        <p className="text-gray-300 text-sm text-center">
-          <span className="font-bold text-white">Genero: </span>
-          {filme.genero}
-        </p>
-        <p className="text-gray-300 text-sm">
-          <span className="font-bold text-white">Ano: </span>
-          {filme.ano}
-        </p>
-        <p className="text-gray-300 text-sm">
-          <span className="font-bold text-white">Duração:</span> {horas}h{" "}
-          {restoMinutos}m
-        </p>
-      </div>
+    <div className="relative w-full h-full">
+      <Image
+        src={`https://image.tmdb.org/t/p/original${filme.poster}`}
+        alt={`Poster do filme ${filme.nome}`}
+        width={1080}
+        height={1920}
+        className="w-[180px] h-[240px] rounded-md"
+        onClick={onClick}
+      />
       <button
-        className="bg-black border border-white hover:bg-gradient-to-t text-slate-300 rounded-md w-32 mt-auto" // Adiciona mt-auto para empurrar o botão para baixo
+        className={`absolute top-0 right-0 rounded-full p-2 ${status === "pra assistir"
+            ? "bg-gray-500"
+            : status === "assistindo"
+              ? "bg-yellow-500"
+              : "bg-green-500"
+          }`}
         onClick={(e) => {
           e.stopPropagation();
           handleStatus();
         }}
       >
-        {status}
+        <FaEye className="text-white" />
       </button>
     </div>
   );

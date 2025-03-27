@@ -17,9 +17,8 @@ interface Serie {
     nome: string;
     genero: string;
     ano: number;
-    temporadas: number;
-    episodios: number;
     status: string;
+    poster: string;
     respostaApi: {
         overview: string;
         poster_path: string;

@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useContext, useState } from "react";
 import { Card } from "./card";
@@ -8,11 +8,6 @@ import ModalBusca from "./modalBusca";
 
 interface Props {
   id: number;
-  nome: string;
-  genero: string;
-  ano: number;
-  temporadas: number;
-  episodios: number;
   status: string;
 }
 
@@ -42,8 +37,26 @@ export default function Lista() {
     setTmdbResults(data.data);
   };
 
+  // ação de atualizar os dados do banco
+  // const handleUpdate = async () => {
+  //   try {
+  //     const response = await fetch("series/api", {
+  //       method: "PUT",
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Erro ao atualizar os dados do banco");
+  //     }
+
+  //     window.location.reload();
+  //   } catch (error) {
+  //     console.log("Erro ao atualizar:", error);
+  //   }
+  // };
+
   return (
     <div className="flex flex-col items-center">
+
       <ul className="flex justify-center flex-wrap gap-2">
         {filteredData
           .sort((a, b) => a.nome.localeCompare(b.nome))

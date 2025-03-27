@@ -1,23 +1,21 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface ModalInfoProps {
   serie: {
     id: number;
-    nome: string;
-    genero: string;
-    ano: number;
-    temporadas: number;
-    episodios: number;
-    status: string;
   };
   onClose: () => void;
 }
 
 export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
   const [dados, setDados] = useState<{
+    id: number;
+    name: string;
+    genres: { id: number; name: string }[];
+    first_air_date: string;
+    number_of_seasons: number;
+    number_of_episodes: number;
     poster_path: string;
     overview: string;
   } | null>(null);
@@ -102,29 +100,29 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
           </button>
         </div>
 
-        <h2 className="text-teal-300 font-bold text-center mb-4 text-3xl">{serie.nome}</h2>
+        <h2 className="text-teal-300 font-bold text-center mb-4 text-3xl">{dados.name}</h2>
         <Image
           src={imageUrl}
-          alt={serie.nome}
+          alt={`poster de ${dados.name}`}
           width={1080}
           height={1920}
           className="w-[80%] lg:w-[60%] rounded-md"
         />
         <p className="text-gray-300 text-center">
           <span className="font-bold text-lg text-white">Genero: </span>
-          {serie.genero}
+          {dados.genres.map((genre) => genre.name).join(" / ")}
         </p>
         <p className="text-gray-300">
           <span className="font-bold text-lg text-white">Ano: </span>
-          {serie.ano}
+          {dados.first_air_date.slice(0, 4)}
         </p>
         <p className="text-gray-300">
           <span className="font-bold text-lg text-white">Temporadas:</span>{" "}
-          {serie.temporadas}
+          {dados.number_of_seasons}
         </p>
         <p className="text-gray-300">
           <span className="font-bold text-lg text-white">Episódios:</span>{" "}
-          {serie.episodios}
+          {dados.number_of_episodes}
         </p>
         <p className="text-gray-300 text-center text-lg">{dados.overview}</p>
       </div>

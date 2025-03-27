@@ -1,22 +1,20 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface ModalInfoProps {
   filme: {
     id: number;
-    nome: string;
-    genero: string;
-    ano: number;
-    duracao: number;
-    status: string;
   };
   onClose: () => void;
 }
 
 export default function ModalInfo({ filme, onClose }: ModalInfoProps) {
   const [dados, setDados] = useState<{
+    id: number;
+    title: string;
+    genres: { id: number; name: string }[];
+    release_date: string;
+    runtime: number;
     poster_path: string;
     overview: string;
   } | null>(null);
@@ -98,22 +96,27 @@ export default function ModalInfo({ filme, onClose }: ModalInfoProps) {
           </button>
         </div>
 
-        <h2 className="text-blue-500 font-bold text-center mb-4 text-3xl">{filme.nome}</h2>
+        <h2 className="text-blue-500 font-bold text-center mb-4 text-3xl">
+          {dados.title}
+        </h2>
         <Image
           src={imageUrl}
-          alt={filme.nome}
+          alt={`poster de ${dados.title}`}
           width={1080}
           height={1920}
           className="w-[80%] lg:w-[60%] rounded-md"
         />
         <p className="text-zinc-300 text-center">
-          <span className="font-bold text-lg text-white">Gênero:</span> {filme.genero}
+          <span className="font-bold text-lg text-white">Gênero:</span>{" "}
+          {dados.genres.map((genre) => genre.name).join(" / ")}
         </p>
         <p className="text-zinc-300">
-          <span className="font-bold text-lg text-white">Ano:</span> {filme.ano}
+          <span className="font-bold text-lg text-white">Ano:</span>{" "}
+          {dados.release_date.slice(0, 4)}
         </p>
         <p className="text-zinc-300">
-          <span className="font-bold text-lg text-white">Duração:</span> {filme.duracao} min
+          <span className="font-bold text-lg text-white">Duração:</span>{" "}
+          {Math.floor(dados.runtime / 60)}h {dados.runtime % 60}m
         </p>
         <p className="text-lg text-center text-zinc-300">{dados.overview}</p>
       </div>

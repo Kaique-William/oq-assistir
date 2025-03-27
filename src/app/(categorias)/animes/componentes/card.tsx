@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import { FaEye } from "react-icons/fa";
 
 interface CardProps {
   anime: {
@@ -6,9 +8,8 @@ interface CardProps {
     nome: string;
     genero: string;
     ano: number;
-    temporadas: number;
-    episodios: number;
     status: string;
+    poster: string;
   };
   onClick: () => void;
 }
@@ -70,37 +71,29 @@ export function Card({ anime, onClick }: CardProps) {
   }, [tempo]);
 
   return (
-    <div
-      onClick={onClick} // Chama a função onClick quando o card é clicado
-      className="flex flex-col items-center h-full" // Adiciona classes CSS
-    >
-      <div className="flex flex-col text-center pt-1 space-y-2">
-        <h2 className="text-orange-500 font-bold line-clamp-2 overflow-hidden text-ellipsis whitespace-normal">
-          {anime.nome}
-        </h2>
-        <p className="text-gray-300 text-sm text-center">
-          <span className="font-bold text-white">Genero: </span>
-          {anime.genero}
-        </p>
-        <p className="text-gray-300 text-sm">
-          <span className="font-bold text-white">Ano: </span>
-          {anime.ano}
-        </p>
-        <p className="text-gray-300 text-sm">
-          <span className="font-bold text-white">Temporadas:</span> {anime.temporadas}
-        </p>
-        <p className="text-gray-300 text-sm">
-          <span className="font-bold text-white">Episódios:</span> {anime.episodios}
-        </p>
-      </div>
+    <div className="relative w-full h-full">
+      <Image
+        src={`https://image.tmdb.org/t/p/original${anime.poster}`}
+        alt={`Poster do anime ${anime.nome}`}
+        width={1080}
+        height={1920}
+        className="w-[180px] h-[240px] rounded-md"
+        onClick={onClick}
+      />
       <button
-        className="bg-black border border-white hover:bg-gradient-to-t text-slate-300 rounded-md w-32 mt-auto" // Adiciona mt-auto para empurrar o botão para baixo
+        className={`absolute top-0 right-0 rounded-full p-2 ${
+          status === "pra assistir"
+            ? "bg-zinc-500"
+            : status === "assistindo"
+            ? "bg-yellow-500"
+            : "bg-green-500"
+        }`}
         onClick={(e) => {
           e.stopPropagation();
           handleStatus();
         }}
       >
-        {status}
+        <FaEye className="text-white" />
       </button>
     </div>
   );

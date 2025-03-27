@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,7 +23,7 @@ export default function Header() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPesquisa(e.target.value);
-  }
+  };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,6 +56,11 @@ export default function Header() {
                   ? "text-red-600"
                   : "text-white" + " mx-2 hover:text-red-500"
               }
+              onClick={() => {
+                if (pathname === link.href) {
+                  window.location.reload();
+                }
+              }}
             >
               {link.label}
             </Link>

@@ -8,10 +8,6 @@ import ModalBusca from "./modalBusca";
 
 interface Props {
   id: number;
-  nome: string;
-  genero: string;
-  ano: number;
-  duracao: number;
   status: string;
 }
 
@@ -39,8 +35,27 @@ export default function Lista() {
     setTmdbResults(data);
   }
 
+  // ação de atualizar os dados do banco
+
+  // const handleUpdate = async () => {
+  //   try {
+  //     const response = await fetch("filmes/api", {
+  //       method: "PUT",
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Erro ao atualizar os dados do banco");
+  //     }
+
+  //     window.location.reload();
+  //   } catch (error) {
+  //     console.log("Erro ao atualizar:", error);
+  //   }
+  // };
+
   return (
     <div className="flex flex-col items-center">
+
       <ul className="flex justify-center flex-wrap gap-2">
         {filteredData
           .sort((a, b) => a.nome.localeCompare(b.nome))
@@ -57,8 +72,8 @@ export default function Lista() {
 
             return (
               <li
-                className={` w-[182px] h-[250px] p-1 rounded-lg bg-gradient-to-t ${corBorda} via-black to-black border border-white hover:cursor-pointer hover:scale-105 duration-300`}
-                key={filme.id}
+              className={`w-[180px] h-[250px] p-1 mb-1 rounded-lg bg-gradient-to-t ${corBorda} via-black to-black border border-white hover:cursor-pointer hover:scale-105 duration-300`}
+              key={filme.id}
               >
                 <Card filme={filme} onClick={() => handleClickInfo(filme)} />
               </li>
@@ -66,10 +81,10 @@ export default function Lista() {
           })}
       </ul>
 
-      {filteredData.length > 0 && (
+      {searchQuery && filteredData.length > 0 && (
         <button
-        className="mt-4 px-4 py-2 border border-blue-500 text-white rounded-lg hover:bg-blue-700"
-        onClick={handleTmdbSearch}
+          className="mt-4 px-4 py-2 border border-blue-500 text-white rounded-lg hover:bg-blue-700"
+          onClick={handleTmdbSearch}
         >
           Mais resultados
         </button>

@@ -30,7 +30,7 @@ export default function ModalTendencia({ info, onClose }: Props) {
       name,
       title,
       genres,
-      // poster_path,
+      poster_path,
       number_of_episodes,
       number_of_seasons,
       runtime,
@@ -54,6 +54,7 @@ export default function ModalTendencia({ info, onClose }: Props) {
             genero,
             ano,
             duracao: runtime,
+            poster: poster_path,
           }),
         });
         if (!response.ok) {
@@ -78,6 +79,7 @@ export default function ModalTendencia({ info, onClose }: Props) {
             ano,
             temporadas: number_of_seasons,
             episodios: number_of_episodes,
+            poster: poster_path,
           }),
         });
         if (!response.ok) {
@@ -98,6 +100,7 @@ export default function ModalTendencia({ info, onClose }: Props) {
             ano,
             temporadas: number_of_seasons,
             episodios: number_of_episodes,
+            poster: poster_path,
           }),
         });
         if (!response.ok) {
@@ -165,10 +168,11 @@ export default function ModalTendencia({ info, onClose }: Props) {
               </p>
               <p className="text-zinc-300 text-center">
                 <span className="font-bold text-lg text-white">Ano: </span>
-                {parseInt(
-                  tendencia.first_air_date.slice(0, 4) ||
-                  tendencia.release_date.slice(0, 4)
-                )}
+                {tendencia.first_air_date
+                  ? parseInt(tendencia.first_air_date.slice(0, 4), 10)
+                  : tendencia.release_date
+                    ? parseInt(tendencia.release_date.slice(0, 4), 10)
+                    : "Desconhecido"}
               </p>
               {tendencia.media_type === "tv" ? (
                 <>

@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const source = searchParams.get("source") || "database";
 
     const buscaBanco = await sql`
-          SELECT id, nome, genero, ano, duracao, status FROM filmes
+          SELECT id, nome, genero, ano, status, poster FROM filmes
           WHERE LOWER(nome || genero || ano) LIKE ${
             "%" + query.toLowerCase() + "%"
           }
@@ -51,8 +51,8 @@ export async function GET(req: NextRequest) {
         nome VARCHAR(255) NOT NULL,
         genero VARCHAR(255) NOT NULL,
         ano INT NOT NULL,
-        duracao INT NOT NULL,
         status VARCHAR(255) NOT NULL DEFAULT 'pra assistir' CHECK (status IN ('pra assistir', 'assistindo', 'assistido'))
+        poster VARCHAR(255) NOT NULL
       )`;
       return NextResponse.json({ message: "Tabela criada com sucesso" });
     } else {
@@ -65,14 +65,17 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { id, nome, genero, ano, duracao } = await req.json();
+  const { id, nome, genero, ano, poster } = await req.json();
 
   try {
     await sql`
-      INSERT INTO filmes (id, nome, genero, ano, duracao)
-      VALUES (${id}, ${nome}, ${genero}, ${ano}, ${duracao})
+      INSERT INTO filmes (id, nome, genero, ano, poster)
+      VALUES (${id}, ${nome}, ${genero}, ${ano}, ${poster})
       `;
-    return NextResponse.json({ message: "Filme adicionado com sucesso" });
+    return NextResponse.json(
+      { message: "Filme adicionado com sucesso" },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Erro ao adicionar filme:", error);
     return NextResponse.json(
@@ -109,7 +112,10 @@ export async function DELETE(req: NextRequest) {
       DELETE FROM filmes
       WHERE id = ${id}
       `;
-    return NextResponse.json({ message: "Filme deletado com sucesso" });
+    return NextResponse.json(
+      { message: "Filme deletado com sucesso" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Erro ao deletar filme:", error);
     return NextResponse.json(
@@ -118,3 +124,35 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+// atualizar dados do banco quando nescesario
+// export async function PUT() {
+//   try {
+//     const { rows: filmes } = await sql`SELECT id, nome, poster FROM filmes`;
+
+//     for (const filme of filmes) {
+//       if (!filme.poster) {
+//         const response = await fetch(
+//           `https://api.themoviedb.org/3/movie/${filme.id}?api_key=${key}&language=pt-BR`
+//         );
+//         const data = await response.json();
+
+//         if (data && data.poster_path) {
+//           await sql`
+//             UPDATE filmes
+//             SET poster = ${data.poster_path}
+//             WHERE id = ${filme.id}
+//           `;
+//         }
+//       }
+//     }
+
+//     return NextResponse.json({ message: "Dados atualizados com sucesso" });
+//   } catch (error) {
+//     console.error("Erro ao atualizar dados:", error);
+//     return NextResponse.json(
+//       { error: "Erro ao atualizar dados" },
+//       { status: 500 }
+//     );
+//   }
+// }
