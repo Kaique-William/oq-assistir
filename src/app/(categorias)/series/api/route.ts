@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
     // Busca no banco de dados por séries que correspondem à query
     const buscaBanco = await sql`
-          SELECT id, nome, genero, ano, status, poster FROM series
+          SELECT id, nome, genero, ano, status, poster, prioridade FROM series
           WHERE LOWER(nome || genero || ano) LIKE ${
             "%" + query.toLowerCase() + "%"
           }
