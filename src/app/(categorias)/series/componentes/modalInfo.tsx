@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 interface ModalInfoProps {
   serie: {
@@ -36,6 +37,11 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
 
       window.location.reload();
     } catch (error) {
+      Swal.fire({
+        title: "Erro ao deletar a série",
+        icon: "error"
+      })
+      
       console.log("Erro ao deletar:", error);
     }
   };

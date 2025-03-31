@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 interface TMDB {
   id: number;
@@ -42,6 +43,11 @@ export default function ModalBusca({ filmesApi, onClose }: ModalBuscaProps) {
       });
 
       if (!response.ok) {
+        Swal.fire({
+          title: "Erro ao salvar filme!",
+          icon: "error"
+        })
+                
         throw new Error("Erro ao salvar o filme");
       }
 

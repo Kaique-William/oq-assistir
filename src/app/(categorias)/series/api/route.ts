@@ -97,8 +97,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Erro ao adicionar série: ", error);
     return NextResponse.json(
-      { error: "Erro ao adicionar série" },
-      { status: 500 }
+      { error: "Está serie ja está salva!" },
+      { status: 409 }
     );
   }
 }
