@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
     // Busca no banco de dados por séries que correspondem à query
     const buscaBanco = await sql`
-          SELECT id, nome, genero, ano, status, poster FROM series
+          SELECT id, nome, genero, ano, status, poster, prioridade FROM series
           WHERE LOWER(nome || genero || ano) LIKE ${
             "%" + query.toLowerCase() + "%"
           }
@@ -97,8 +97,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Erro ao adicionar série: ", error);
     return NextResponse.json(
-      { error: "Erro ao adicionar série" },
-      { status: 500 }
+      { error: "Está serie ja está salva!" },
+      { status: 409 }
     );
   }
 }

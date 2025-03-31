@@ -79,8 +79,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Erro ao adicionar filme:", error);
     return NextResponse.json(
-      { error: "Erro ao adicionar filme" },
-      { status: 500 }
+      { error: "Esse filme já está salvo!" },
+      { status: 409}
     );
   }
 }

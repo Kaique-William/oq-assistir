@@ -97,8 +97,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Erro ao adicionar anime: ", error);
     return NextResponse.json(
-      { error: "Erro ao adicionar anime" },
-      { status: 500 }
+      { error: "Este anime já está salvo!" },
+      { status: 409 }
     );
   }
 }

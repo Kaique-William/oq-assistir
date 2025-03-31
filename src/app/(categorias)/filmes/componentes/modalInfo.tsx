@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 interface ModalInfoProps {
   filme: {
@@ -30,6 +31,11 @@ export default function ModalInfo({ filme, onClose }: ModalInfoProps) {
       });
 
       if (!response.ok) {
+        Swal.fire({
+          title: "Erro ao deletar filme!",
+          icon: "error"
+        })
+                
         throw new Error("Erro ao deletar o filme");
       }
 

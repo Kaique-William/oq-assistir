@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 interface TMDB {
   id: number;
@@ -54,6 +55,11 @@ export default function ModalBusca({ animeApi, onClose }: ModalBuscaProps) {
       });
 
       if (!response.ok) {
+        Swal.fire({
+          title: "Erro ao salvar anime!",
+          icon: "error"
+        })
+                
         throw new Error("Erro ao salvar o anime");
       }
 

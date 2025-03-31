@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react"; // Adicionar useEffect
+import Swal from "sweetalert2";
 
 interface TMDB {
   id: number;
@@ -58,6 +59,17 @@ export default function ModalTendencia({ info, onClose }: Props) {
           }),
         });
         if (!response.ok) {
+          if(response?.status === 409){
+            Swal.fire({
+              title: "Este filme já está salvo",
+              icon: "info",
+            })
+          } else {
+            Swal.fire({
+              title: "Erro ao salvar filme",
+              icon: "error",
+            })
+          }
           throw new Error("Erro ao salvar o filme");
         }
         onClose();
@@ -83,6 +95,18 @@ export default function ModalTendencia({ info, onClose }: Props) {
           }),
         });
         if (!response.ok) {
+          if(response?.status === 409){
+            Swal.fire({
+              title: "Essa serie já está salvo!",
+              icon: "info",
+            })
+          } else {
+            Swal.fire({
+              title: "Erro ao salvar a serie",
+              icon: "error",    
+            })
+          }
+           
           throw new Error("Erro ao salvar a série");
         }
         onClose();
@@ -103,7 +127,19 @@ export default function ModalTendencia({ info, onClose }: Props) {
             poster: poster_path,
           }),
         });
-        if (!response.ok) {
+        if (!response.ok) { 
+          if(response?.status === 409){
+            Swal.fire({
+              title: "Esse anime já está salvo",
+              icon: "info",
+            })
+          } else {
+            Swal.fire({
+              title: "Erro ao salvar o anime",
+              icon: "error",
+            })
+          }
+         
           throw new Error("Erro ao salvar o anime");
         }
         onClose();
