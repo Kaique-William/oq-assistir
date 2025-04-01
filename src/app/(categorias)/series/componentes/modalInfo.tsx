@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 interface ModalInfoProps {
   serie: {
     id: number;
+    prioridade?: number;
   };
   onClose: () => void;
 }
@@ -20,6 +21,8 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
     poster_path: string;
     overview: string;
   } | null>(null);
+
+  const [showPrioridade, setShowPrioridade] = useState(false);
 
   const handleDelete = async (id: number) => {
     try {
@@ -41,8 +44,76 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
         title: "Erro ao deletar a série",
         icon: "error"
       })
-      
+
       console.log("Erro ao deletar:", error);
+    }
+  };
+
+  const handlePriorityChange = async (id: number, priority: number) => {
+    try {
+      const response = await fetch("series/api", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, prioridade: priority }),
+      });
+
+      if (response.status === 409) {
+        const data = await response.json();
+        const { conflictingSerie } = data;
+
+        const conflictingList = conflictingSerie
+          .sort((a: { prioridade: number }, b: { prioridade: number }) => a.prioridade - b.prioridade)
+          .map(
+            (serie: { nome: string; prioridade: number }) =>
+              ` ${serie.nome} Prioridade:${serie.prioridade}`
+          )
+          .join("\n");
+
+        const result = await Swal.fire({
+          title: `Conflito de prioridade!`,
+          html: `<p>Os seguintes itens possuem prioridade conflitante:</p><pre>${conflictingList}</pre><p>Deseja substituir?</p>`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sim",
+          cancelButtonText: "Não",
+        });
+
+        if (result.isConfirmed) {
+          await fetch("series/api", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id, prioridade: priority, force: true }),
+          });
+
+          Swal.fire({
+            title: "Prioridade alterada com sucesso!",
+            icon: "success",
+          });
+
+          window.location.reload();
+        }
+      } else if (!response.ok) {
+        throw new Error("Erro ao alterar a prioridade");
+      } else {
+        Swal.fire({
+          title: "Prioridade alterada com sucesso!",
+          icon: "success",
+        });
+
+        setShowPrioridade(false);
+        window.location.reload();
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Erro ao alterar a prioridade",
+        icon: "error",
+      });
+
+      console.log("Erro ao alterar prioridade:", error);
     }
   };
 
@@ -89,12 +160,21 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex w-full justify-between p-2">
-          <span
+          <button
             className="text-red-600 font-bold text-3xl hover:cursor-pointer"
             onClick={handleClose}
           >
             &times;
-          </span>
+          </button>
+          <button
+            className="p-2 mr-2 border border-yellow-600 hover:bg-yellow-600 text-white rounded-xl"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowPrioridade(!showPrioridade);
+            }}
+          >
+            Prioridade
+          </button>
           <button
             className="p-2 mr-2 border border-red-600 hover:bg-red-600 text-white rounded-xl"
             onClick={(e) => {
@@ -105,6 +185,23 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
             Deletar
           </button>
         </div>
+
+        {showPrioridade && (
+          <div className="flex gap-2 mt-2">
+            {[1, 2, 3, 4, 5].map((priority) => (
+              <button
+                key={priority}
+                className="p-2 border border-blue-600 hover:bg-blue-600 text-white rounded-xl"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePriorityChange(serie.id, priority);
+                }}
+              >
+                {priority}
+              </button>
+            ))}
+          </div>
+        )}
 
         <h2 className="text-teal-300 font-bold text-center mb-4 text-3xl">{dados.name}</h2>
         <Image

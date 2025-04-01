@@ -64,9 +64,7 @@ export default function Tendencia() {
         ))}
       </ul>
 
-        <br/>
-        <h2>Lista de prioridade: </h2>
-        <br/>
+      <h2 className="text-center text-xl font-medium my-4">Prioridade</h2>
       <Prioridade />
 
       {selecionado && (

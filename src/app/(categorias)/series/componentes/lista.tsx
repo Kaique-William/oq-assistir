@@ -9,6 +9,7 @@ import ModalBusca from "./modalBusca";
 interface Props {
   id: number;
   status: string;
+  prioridade?: number;
 }
 
 export default function Lista() {

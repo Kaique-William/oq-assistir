@@ -104,23 +104,47 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const { id, status } = await req.json();
+  const { id, prioridade, force } = await req.json();
 
   try {
+    // Verifica se já existe uma série com a prioridade desejada
+    const { rows: conflictingSeries } = await sql`
+      SELECT id, nome, prioridade FROM series WHERE prioridade >= ${prioridade}
+    `;
+
+    if (conflictingSeries.length > 0 && !force) {
+      // Retorna conflito se já houver uma série com a mesma prioridade
+      return NextResponse.json(
+        {
+          error: "Conflito de prioridade",
+          conflictingSerie: conflictingSeries,
+        },
+        { status: 409 }
+      );
+    }
+
+    // Desloca as prioridades existentes para evitar conflitos
     await sql`
       UPDATE series
-      SET status = ${status}
+      SET prioridade = prioridade::INTEGER + 1
+      WHERE prioridade::INTEGER >= ${prioridade} AND prioridade::INTEGER < 5
+    `;
+
+    // Atualiza a prioridade da série
+    await sql`
+      UPDATE series
+      SET prioridade = ${prioridade}
       WHERE id = ${id}
     `;
 
     return NextResponse.json(
-      { message: "Status da série atualizado com sucesso" },
+      { message: "Prioridade atualizada com sucesso" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Erro ao atualizar status da série: ", error);
+    console.error("Erro ao atualizar prioridade:", error);
     return NextResponse.json(
-      { error: "Erro ao atualizar status da série" },
+      { error: "Erro ao atualizar prioridade" },
       { status: 500 }
     );
   }
@@ -149,33 +173,33 @@ export async function DELETE(req: NextRequest) {
 }
 
 // atualizar dados do banco quando nescesario
-export async function PUT() {
-  try {
-    const { rows: series } = await sql`SELECT id, nome, poster FROM series`;
+// export async function PUT() {
+//   try {
+//     const { rows: series } = await sql`SELECT id, nome, poster FROM series`;
 
-    for (const serie of series) {
-      if (!serie.poster) {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/tv/${serie.id}?api_key=${key}&language=pt-BR`
-        );
-        const data = await response.json();
+//     for (const serie of series) {
+//       if (!serie.poster) {
+//         const response = await fetch(
+//           `https://api.themoviedb.org/3/tv/${serie.id}?api_key=${key}&language=pt-BR`
+//         );
+//         const data = await response.json();
 
-        if (data && data.poster_path) {
-          await sql`
-            UPDATE series
-            SET poster = ${data.poster_path}
-            WHERE id = ${serie.id}
-          `;
-        }
-      }
-    }
+//         if (data && data.poster_path) {
+//           await sql`
+//             UPDATE series
+//             SET poster = ${data.poster_path}
+//             WHERE id = ${serie.id}
+//           `;
+//         }
+//       }
+//     }
 
-    return NextResponse.json({ message: "Dados atualizados com sucesso" });
-  } catch (error) {
-    console.error("Erro ao atualizar dados:", error);
-    return NextResponse.json(
-      { error: "Erro ao atualizar dados" },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json({ message: "Dados atualizados com sucesso" });
+//   } catch (error) {
+//     console.error("Erro ao atualizar dados:", error);
+//     return NextResponse.json(
+//       { error: "Erro ao atualizar dados" },
+//       { status: 500 }
+//     );
+//   }
+// }
