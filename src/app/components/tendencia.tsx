@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ModalTendencia from "./modalTendencia";
-import Prioridade from "./prioridade";
 
 const key = process.env.NEXT_PUBLIC_API_KEY;
 
@@ -63,9 +62,6 @@ export default function Tendencia() {
           </li>
         ))}
       </ul>
-
-      <h2 className="text-center text-xl font-medium my-4">Prioridade</h2>
-      <Prioridade />
 
       {selecionado && (
         <ModalTendencia info={[selecionado]} onClose={handleClose} />

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
     // Busca no banco de dados por animes que correspondem à query
     const buscaBanco = await sql`
-          SELECT id, nome, genero, ano, status, poster FROM animes
+          SELECT id, nome, genero, ano, status, poster, prioridade FROM animes
           WHERE LOWER(nome || genero || ano) LIKE ${
             "%" + query.toLowerCase() + "%"
           }
@@ -104,9 +104,48 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const { id, status } = await req.json();
+  const { id, status, prioridade, force } = await req.json();
 
   try {
+    if (prioridade !== undefined) {
+      const { rows: conflictingAnimes } = await sql`
+        SELECT id, nome, prioridade FROM animes WHERE prioridade >= ${prioridade}
+      `;
+
+      if (conflictingAnimes.length > 0 && !force) {
+        return NextResponse.json(
+          {
+            error: "Conflito de prioridade",
+            conflictingAnime: conflictingAnimes,
+          },
+          { status: 409 }
+        );
+      }
+
+      await sql`
+        UPDATE animes
+        SET prioridade = prioridade::INTEGER + 1
+        WHERE prioridade::INTEGER >= ${prioridade} AND prioridade::INTEGER < 6
+      `;
+
+      await sql`
+        UPDATE animes
+        SET prioridade = 0
+        WHERE prioridade::INTEGER = 6
+      `;
+
+      await sql`
+        UPDATE animes
+        SET prioridade = ${prioridade}
+        WHERE id = ${id}
+      `;
+
+      return NextResponse.json(
+        { message: "Prioridade atualizada com sucesso" },
+        { status: 200 }
+      );
+    }
+
     await sql`
       UPDATE animes
       SET status = ${status}
@@ -118,9 +157,9 @@ export async function PATCH(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Erro ao atualizar status do anime: ", error);
+    console.error("Erro ao atualizar status ou prioridade do anime: ", error);
     return NextResponse.json(
-      { error: "Erro ao atualizar status do anime" },
+      { error: "Erro ao atualizar status ou prioridade do anime" },
       { status: 500 }
     );
   }

@@ -42,8 +42,8 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
     } catch (error) {
       Swal.fire({
         title: "Erro ao deletar a série",
-        icon: "error"
-      })
+        icon: "error",
+      });
 
       console.log("Erro ao deletar:", error);
     }
@@ -64,16 +64,19 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
         const { conflictingSerie } = data;
 
         const conflictingList = conflictingSerie
-          .sort((a: { prioridade: number }, b: { prioridade: number }) => a.prioridade - b.prioridade)
+          .sort(
+            (a: { prioridade: number }, b: { prioridade: number }) =>
+              a.prioridade - b.prioridade
+          )
           .map(
             (serie: { nome: string; prioridade: number }) =>
-              ` ${serie.nome} Prioridade:${serie.prioridade}`
+              `${serie.prioridade} <strong>${serie.nome}</strong>`
           )
           .join("\n");
 
         const result = await Swal.fire({
-          title: `Conflito de prioridade!`,
-          html: `<p>Os seguintes itens possuem prioridade conflitante:</p><pre>${conflictingList}</pre><p>Deseja substituir?</p>`,
+          title: `alterar prioridade?`,
+          html: `<p>Esta é sua lista de prioridade atual:</p><br><pre>${conflictingList}</pre><br><p>Deseja substituir?</p>`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "Sim",
@@ -156,18 +159,19 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
       onClick={handleClose}
     >
       <div
-        className="lg:w-[70%] w-[97%] max-h-[80%] mt-3 bg-black border-2 border-white p-4 rounded-lg flex flex-col items-center text-center overflow-y-auto"
+        className="lg:w-[70%] w-[97%] max-h-[80%] mt-3 bg-black border-2 border-white p-3 rounded-lg flex flex-col items-center text-center overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex w-full justify-between p-2">
+        <div className="flex w-full justify-between ">
           <button
             className="text-red-600 font-bold text-3xl hover:cursor-pointer"
             onClick={handleClose}
           >
             &times;
           </button>
+
           <button
-            className="p-2 mr-2 border border-yellow-600 hover:bg-yellow-600 text-white rounded-xl"
+            className="p-2 ml-6 border border-yellow-600 hover:bg-yellow-600 text-white rounded-xl"
             onClick={(e) => {
               e.stopPropagation();
               setShowPrioridade(!showPrioridade);
@@ -175,8 +179,9 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
           >
             Prioridade
           </button>
+
           <button
-            className="p-2 mr-2 border border-red-600 hover:bg-red-600 text-white rounded-xl"
+            className="p-2 border border-red-600 hover:bg-red-600 text-white rounded-xl"
             onClick={(e) => {
               e.stopPropagation();
               handleDelete(serie.id);
@@ -184,26 +189,28 @@ export default function ModalInfo({ serie, onClose }: ModalInfoProps) {
           >
             Deletar
           </button>
+
         </div>
+          {showPrioridade && (
+            <div className="flex gap-2 mt-2">
+              {[1, 2, 3, 4, 5].map((priority) => (
+                <button
+                  key={priority}
+                  className="p-2 border border-blue-600 hover:bg-blue-600 text-white rounded-xl"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePriorityChange(serie.id, priority);
+                  }}
+                >
+                  {priority}
+                </button>
+              ))}
+            </div>
+          )}
 
-        {showPrioridade && (
-          <div className="flex gap-2 mt-2">
-            {[1, 2, 3, 4, 5].map((priority) => (
-              <button
-                key={priority}
-                className="p-2 border border-blue-600 hover:bg-blue-600 text-white rounded-xl"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePriorityChange(serie.id, priority);
-                }}
-              >
-                {priority}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <h2 className="text-teal-300 font-bold text-center mb-4 text-3xl">{dados.name}</h2>
+        <h2 className="text-teal-300 font-bold text-center mb-4 text-3xl">
+          {dados.name}
+        </h2>
         <Image
           src={imageUrl}
           alt={`poster de ${dados.name}`}

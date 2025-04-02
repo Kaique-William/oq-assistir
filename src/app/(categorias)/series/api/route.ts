@@ -127,7 +127,14 @@ export async function PATCH(req: NextRequest) {
     await sql`
       UPDATE series
       SET prioridade = prioridade::INTEGER + 1
-      WHERE prioridade::INTEGER >= ${prioridade} AND prioridade::INTEGER < 5
+      WHERE prioridade::INTEGER >= ${prioridade} AND prioridade::INTEGER < 6
+    `;
+
+    // Redefine a prioridade 5 para 0
+    await sql`
+      UPDATE series
+      SET prioridade = 0
+      WHERE prioridade::INTEGER = 6
     `;
 
     // Atualiza a prioridade da série
