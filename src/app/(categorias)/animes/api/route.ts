@@ -70,6 +70,7 @@ export async function GET(req: NextRequest) {
         ano INT NOT NULL,
         status VARCHAR(20) NOT NULL DEFAULT 'pra assistir' CHECK (status IN ('pra assistir', 'assistindo', 'assistido'))
         poster VARCHAR(255) TEXT NOT NULL
+        prioridade INT NOT NULL DEFAULT 6 CHECK (prioridade >= 0 AND prioridade <= 6)
         )`;
       return NextResponse.json({ message: "Tabela animes criada" });
     } else {
@@ -104,17 +105,80 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const { id, status } = await req.json();
+  const { id, status, prioridade, force } = await req.json();
 
   try {
-    await sql`
-      UPDATE animes
-      SET status = ${status}
-      WHERE id = ${id}
-    `;
+    if (status === "assistido") {
+      // Atualiza o status para "assistido" e define a prioridade como 0
+      const {
+        rows: [anime],
+      } = await sql`
+        SELECT prioridade FROM animes WHERE id = ${id}
+      `;
+
+      if (!anime) {
+        return NextResponse.json(
+          { error: "Anime não encontrado" },
+          { status: 404 }
+        );
+      }
+
+      const prioridadeAtual = anime.prioridade;
+
+      await sql`
+        UPDATE animes
+        SET status = 'assistido', prioridade = 0
+        WHERE id = ${id}
+      `;
+
+      // Ajusta as prioridades dos itens abaixo
+      await sql`
+        UPDATE animes
+        SET prioridade = prioridade::INTEGER - 1
+        WHERE prioridade::INTEGER > ${prioridadeAtual}
+      `;
+    } else if (prioridade !== undefined) {
+      const { rows: conflictingAnimes } = await sql`
+        SELECT id, prioridade FROM animes WHERE prioridade >= ${prioridade}
+      `;
+
+      if (conflictingAnimes.length > 0 && !force) {
+        return NextResponse.json(
+          {
+            error: "Conflito de prioridade",
+            conflictingAnime: conflictingAnimes,
+          },
+          { status: 409 }
+        );
+      }
+
+      await sql`
+        UPDATE animes
+        SET prioridade = prioridade::INTEGER + 1
+        WHERE prioridade::INTEGER >= ${prioridade} AND prioridade::INTEGER < 6
+      `;
+
+      await sql`
+        UPDATE animes
+        SET prioridade = 0
+        WHERE prioridade::INTEGER = 6
+      `;
+
+      await sql`
+        UPDATE animes
+        SET prioridade = ${prioridade}
+        WHERE id = ${id}
+      `;
+    } else {
+      await sql`
+        UPDATE animes
+        SET status = ${status}
+        WHERE id = ${id}
+      `;
+    }
 
     return NextResponse.json(
-      { message: "Status do anime atualizado com sucesso" },
+      { message: "Status ou prioridade do anime atualizado com sucesso" },
       { status: 200 }
     );
   } catch (error) {

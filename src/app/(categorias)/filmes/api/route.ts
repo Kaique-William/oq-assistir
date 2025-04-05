@@ -53,6 +53,7 @@ export async function GET(req: NextRequest) {
         ano INT NOT NULL,
         status VARCHAR(255) NOT NULL DEFAULT 'pra assistir' CHECK (status IN ('pra assistir', 'assistindo', 'assistido'))
         poster VARCHAR(255) NOT NULL
+        prioridade INT NOT NULL DEFAULT 6 CHECK (prioridade >= 0 AND prioridade <= 6)
       )`;
       return NextResponse.json({ message: "Tabela criada com sucesso" });
     } else {
@@ -86,15 +87,105 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const { id, status } = await req.json();
+  const { id, status, prioridade, force } = await req.json();
 
   try {
-    await sql`
-      UPDATE filmes
-      SET status = ${status}
-      WHERE id = ${id}
+    if (status === "assistido") {
+      const {
+        rows: [filme],
+      } = await sql`
+        SELECT prioridade FROM filmes WHERE id = ${id}
       `;
-    return NextResponse.json({ message: "Status atualizado com sucesso" });
+
+      if (!filme) {
+        return NextResponse.json(
+          { error: "Filme não encontrado" },
+          { status: 404 }
+        );
+      }
+
+      const prioridadeAtual = filme.prioridade;
+
+      await sql`
+        UPDATE filmes
+        SET status = 'assistido', prioridade = 0
+        WHERE id = ${id}
+      `;
+
+      await sql`
+        UPDATE filmes
+        SET prioridade = prioridade::INTEGER - 1
+        WHERE prioridade::INTEGER >= ${prioridadeAtual}
+      `;
+    } else if (prioridade !== undefined) {
+      const { rows: conflictingMovies } = await sql`
+      SELECT id, nome, prioridade FROM filmes WHERE prioridade >= ${prioridade}
+    `;
+
+      if (conflictingMovies.length > 0 && !force) {
+        return NextResponse.json(
+          {
+            error: "Conflito de prioridade",
+            conflictingMovie: conflictingMovies,
+          },
+          { status: 409 }
+        );
+      }
+
+      await sql`
+      UPDATE filmes
+      SET prioridade = prioridade::INTEGER + 1
+      WHERE prioridade::INTEGER >= ${prioridade} AND prioridade::INTEGER < 6
+    `;
+
+      await sql`
+      UPDATE filmes
+      SET prioridade = 0
+      WHERE prioridade::INTEGER = 6
+    `;
+
+      await sql`
+      UPDATE filmes
+      SET prioridade = ${prioridade}
+      WHERE id = ${id}
+    `;
+    } else if (status === "assistindo") {
+      const {
+        rows: [filme],
+      } = await sql`
+        SELECT prioridade FROM filmes WHERE id = ${id}
+      `;
+      if (!filme) {
+        return NextResponse.json(
+          { error: "Filme nao encontrado" },
+          { status: 404 }
+        );
+      }
+
+      const prioridadeAtual = filme.prioridade;
+      await sql`
+        UPDATE filmes
+        SET status = 'assistindo', prioridade = ${prioridadeAtual}
+        WHERE id = ${id}
+      `;
+
+      await sql`
+        UPDATE filmes
+       SET status = ${status}
+        WHERE id = ${id}
+      `;
+    } else {
+      await sql`
+        UPDATE filmes
+        SET status = ${status}
+        WHERE id = ${id}
+      `;
+    }
+
+    return NextResponse.json(
+      { message: "Prioridade atualizada com sucesso" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Erro ao atualizar status:", error);
     return NextResponse.json(

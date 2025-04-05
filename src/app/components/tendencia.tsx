@@ -46,7 +46,8 @@ export default function Tendencia() {
   }
 
   return (
-    <div className="w-full px-2">
+    <div className="w-full px-2 pb-3 text-center bg-gradient-to-b from-black to-slate-700 ">
+      <h1 className="text-2xl font-bold mb-4">Tendência da Semana</h1>
       <ul className="flex overflow-x-auto space-x-4 scrollbar-hide">
         {tendencia.map((item: item) => (
           <li key={item.id} className="flex-shrink-0" onClick={() => handleClick(item)}>
