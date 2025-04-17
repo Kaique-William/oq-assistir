@@ -107,6 +107,27 @@ export async function PATCH(req: NextRequest) {
   const { id, status, prioridade, force } = await req.json();
 
   try {
+    if (status === "assistido") {
+      // Atualiza o status para "assistido" e define a prioridade como 0
+      await sql`
+        UPDATE animes
+        SET status = ${status}, prioridade = 0
+        WHERE id = ${id}
+      `;
+
+      // Ajusta as prioridades dos outros itens
+      await sql`
+        UPDATE animes
+        SET prioridade = prioridade::INTEGER - 1
+        WHERE prioridade::INTEGER > 0
+      `;
+
+      return NextResponse.json(
+        { message: "Status atualizado para 'assistido' e prioridades ajustadas" },
+        { status: 200 }
+      );
+    }
+
     if (prioridade !== undefined) {
       const { rows: conflictingAnimes } = await sql`
         SELECT id, nome, prioridade FROM animes WHERE prioridade >= ${prioridade}
