@@ -32,7 +32,7 @@ export default function Lista() {
   const handleTmdbSearch = async () => {
     const response = await fetch(`/filmes/api?q=${searchQuery}&source=tmdb`);
     const data = await response.json();
-    setTmdbResults(data);
+    setTmdbResults(data.data);
   }
 
   // ação de atualizar os dados do banco

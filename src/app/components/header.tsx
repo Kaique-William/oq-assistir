@@ -66,7 +66,8 @@ export default function Header() {
             </Link>
           );
         })}
-        <form onSubmit={handleSearchSubmit}>
+        {pathname !== "/" && (
+          <form onSubmit={handleSearchSubmit}>
           <input
             className="text-black px-2 w-56 lg:w-[500px] rounded-md"
             type="search"
@@ -77,6 +78,7 @@ export default function Header() {
             autoComplete="off" // Desativar sugestões
           />
         </form>
+        )}
       </div>
     </div>
   );
